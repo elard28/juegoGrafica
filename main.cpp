@@ -13,9 +13,10 @@
 #include <GL/glx.h>
 
 #include <GL/glut.h>
-#include "TextureManager.h"
-#include "Ship.h"
+/*#include "TextureManager.h"
+#include "Ship.h"*/
 //#include "Rock.h"
+#include "Game.h"
 
 #define KEY_ESC 27
 
@@ -183,7 +184,7 @@ GLvoid window_idle()
 
 int main(int argc, char** argv) 
 {
-	srand(time(NULL));
+	/*srand(time(NULL));
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
@@ -206,7 +207,9 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(&window_key);
 	glutSpecialFunc(&window_arrow);
 	glutIdleFunc(&window_idle);
-	glutMainLoop(); //bucle de rendering
+	glutMainLoop(); //bucle de rendering*/
+	Game a;
+	a.init_game(argc, argv);
 
 	return 0;
 }
