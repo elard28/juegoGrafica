@@ -124,8 +124,14 @@ void draw_score()
 string tm="TIME: ";
 void draw_time()
 {
-	stringstream ss;
-	ss<<timer/1000;
+	int t=timer/1000;
+
+	stringstream minute;
+	minute<<t/60;
+
+	stringstream second;
+	second<<t%60;
+
 	glRasterPos2i(0, -12);
 	//glColor3f( 0.0f, 0.0f, 1.0f);
 
@@ -135,8 +141,16 @@ void draw_time()
 	for (int i = 0; i < score.size(); ++i)
 		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)tm[i]);
 
-	for (int i = 0; i < ss.str().size(); ++i)
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)ss.str()[i]);
+	for (int i = 0; i < minute.str().size(); ++i)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)minute.str()[i]);
+
+	glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)':');
+
+	if(t%60<10)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)'0');
+
+	for (int i = 0; i < second.str().size(); ++i)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)second.str()[i]);	
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE);
