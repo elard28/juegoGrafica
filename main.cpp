@@ -6,9 +6,9 @@
 #include <string>
 #include <iostream>
 
-#include <AL/al.h>
+/*#include <AL/al.h>
 #include <AL/alc.h>
-#include <AL/alut.h>
+#include <AL/alut.h>*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -92,9 +92,9 @@ void draw_life()
 		glVertex3d(-13.0f+i, -12.0f, 0);//dl
 		glTexCoord2f(0.0f,1.0f);
 		glVertex3d(-13.0f+i, -11.0f, 0);//ul
-		glTexCoord2f(0.2f,1.0f);
+		glTexCoord2f(0.25f,1.0f);
 		glVertex3d(-12.0f+i, -11.0f, 0);//ur
-		glTexCoord2f(0.2f,0.666f);
+		glTexCoord2f(0.25f,0.666f);
 		glVertex3d(-12.0f+i, -12.0f, 0);//dr
 		glEnd();
 	}
@@ -161,11 +161,7 @@ void glPaint(void) {
 	//El fondo de la escena al color initial
 	glClear(GL_COLOR_BUFFER_BIT); 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//funcion de transparencia
-	glEnable(GL_BLEND);//utilizar transparencia
-	timer = glutGet(GLUT_ELAPSED_TIME); // recupera el tiempo ,que paso desde el incio de programa
-	deltatime = timer -timebase;// delta time
-	timebase = timer;
-	anim += deltatime;//duracion de la animacion entre dos cambios de Sprite
+	glEnable(GL_BLEND);//utilizar transparencia	
 	
 
 	/*if(shouldPlaySound){
@@ -194,7 +190,7 @@ void glPaint(void) {
 	glEnd();
 
 
-	if (anim / 1000.0 > 0.15)// si el tiempo de animacion dura mas 0.15s cambiamos de sprite
+	/*if (anim / 1000.0 > 0.15)
 	{
 		iter++;
 		anim = 0.0;
@@ -202,7 +198,8 @@ void glPaint(void) {
 
 	if (iter == 5) iter = 0;
 
-	nave->draw(iter);
+	nave->draw(iter);*/
+	nave->draw();
 
 	
 	if(nave->ifShot())
@@ -220,11 +217,15 @@ void glPaint(void) {
 			cout<<"Puntaje: "<<nave->total_score<<endl;
 		}
 
+		cout<<"nave->collision(enemigo[i]): "<<nave->collision(enemigo[i])<<endl;
+		if(nave->collision(enemigo[i]))
+		{
+			nave->destroy();
+			cout<<"should be destroyed"<<endl;
+		}
+
 		//enemigo[i]->collision(nave);
 	}
-
-	
-
 
 	glDisable(GL_BLEND);
 	
@@ -339,14 +340,14 @@ int main(int argc, char** argv)
 
 
 	texture = TextureManager::Inst()->LoadTexture("image/space1.jpg", GL_BGR_EXT, GL_RGB);
-	sprites = TextureManager::Inst()->LoadTexture("image/nave.png", GL_BGRA_EXT, GL_RGBA);
+	sprites = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_BGRA_EXT, GL_RGBA);
 
-	nave=new Ship(2.5f,0.0f,-5.0f,3);
+	nave = new Ship(2.0f, 0.0f, -5.0f, 3);
 	//Rock roca(2);
 	//enemigo=new Enemy(2.0f);
-	enemigo=new Enemy*[num_enemigos];
+	enemigo = new Enemy*[num_enemigos];
 	for (int i = 0; i < num_enemigos; ++i)
-		enemigo[i]=new Enemy(1.0f,50);
+		enemigo[i] = new Enemy(1.0f, 50);
 	
 	glutDisplayFunc(glPaint);
 	glutReshapeFunc(&window_redraw);
