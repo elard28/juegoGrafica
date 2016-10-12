@@ -4,6 +4,7 @@
 #include <GL/glut.h>
 #include "TextureManager.h"
 #include "Proyectile.h"
+#include "Bonus.h"
 
 class Ship
 {
@@ -17,12 +18,23 @@ public:
 	int total_score;
 	Proyectile shot;
 
+	bool explode;
+
+	bool upgrade_shot;
+
 	/*Proyectile *shot;
 	int numshots;
 	int count;*/
 
+	int iter;
 	double x;
 	double y;
+
+	int timer;
+	int timebase;
+	int deltatime;
+	int anim;
+	float limit;
 
 	Ship();
 
@@ -35,9 +47,16 @@ public:
 		coordy=yy;
 		total_score=0;
 		state=true;
+		explode=false;
 
 		shot.large=0.25f;
 		shot.velocity=0.5f;
+
+		iter=0;
+		timer = 0;
+		timebase = 0;
+		deltatime=0;
+		anim = 0;
 
 		/*numshots=ns;
 		shot=new Proyectile[ns];
@@ -50,6 +69,8 @@ public:
 
 		x = 0.2;
 		y = 0.666;
+
+		upgrade_shot=true;
 	}
 
 	void go_right(){coordx++;}
@@ -62,21 +83,34 @@ public:
 	GLfloat Up(){return coordy+radio;}
 	GLfloat Down(){return coordy-radio;}
 
-	void draw(int i)
+	void draw()
 	{
+		timer = glutGet(GLUT_ELAPSED_TIME); // recupera el tiempo ,que paso desde el incio de programa
+		deltatime = timer -timebase;// delta time
+		timebase = timer;
+		anim += deltatime;
+
 		if(!state)
 			return;
 		glBindTexture(GL_TEXTURE_2D, sprite);
 		glBegin(GL_QUADS);
-		glTexCoord2f(x*i, y);//coordenadas de textura
+		glTexCoord2f(x*iter, y);//coordenadas de textura
 		glVertex3d(Left(), Down(), 0);//abajo izquierda
-		glTexCoord2f(x*i, 1.0f);
+		glTexCoord2f(x*iter, 1.0f);
 		glVertex3d(Left(), Up(), 0);//arriba izquierda
-		glTexCoord2f(x*(i+1.0), 1.0f);
+		glTexCoord2f(x*(iter+1.0), 1.0f);
 		glVertex3d(Right(), Up(), 0);//arriba derecha
-		glTexCoord2f(x*(i+1.0), y);
+		glTexCoord2f(x*(iter+1.0), y);
 		glVertex3d(Right(), Down(), 0);//abajo derecha
 		glEnd();
+
+		if (anim / 1000.0 > 0.15)
+		{
+			iter=(iter+1)%5;
+			anim = 0;
+		}
+		shot.draw();
+
 	}
 
 	void win(int sc)
@@ -102,6 +136,20 @@ public:
 		{
 			state=false;
 			lives--;
+			return true;
+		}
+		return false;
+	}
+
+	bool bonus_collision(Bonus *b)
+	{
+		if( sqrt( pow(coordx - b->coordx, 2) + pow(coordy - b->coordy, 2) ) <= (radio + b->radio) && b->state && state)
+		{
+			b->state=false;
+			if(b->type==0)
+				explode=true;
+			if(b->type==1)
+				shot.upgrade();
 			return true;
 		}
 		return false;
