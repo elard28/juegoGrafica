@@ -23,15 +23,11 @@ public:
 		state=false;
 	}
 
-	void move()
-	{
-		coordy+=velocity;
-	}
 
-	GLfloat Right(){return coordx+large/4;}
-	GLfloat Left(){return coordx-large/4;}
-	GLfloat Up(){return coordy+large;}
-	GLfloat Down(){return coordy-large;}
+	GLfloat Right(){return coordx+large;}
+	GLfloat Left(){return coordx-large;}
+	GLfloat Up(){return coordy+large*4;}
+	GLfloat Down(){return coordy-large*4;}
 
 	void draw()
 	{
@@ -46,11 +42,13 @@ public:
 		glTexCoord2f(1.0,0.0);
 		glVertex3d(Right(), Down(), 0);//dr
 		glEnd();
+
+		coordy+=velocity;
 	}
 
 	bool collision(Enemy *e)
 	{
-		if( sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) ) <= (large + e->radio) && e->state)
+		if( sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) ) <= (large + e->radio) && e->state && state)
 		{
 			e->state=false;
 			state=false;

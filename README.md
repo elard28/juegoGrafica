@@ -1,3 +1,5 @@
 # juegoGrafica
 
-g++ main.cpp -lGL -lGLU -lglut -lfreeimage
+para compilar:
+
+g++ main.cpp -lopenal -lalut -lGL -lGLU -lglut -lfreeimage -lm
