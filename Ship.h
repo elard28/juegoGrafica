@@ -5,6 +5,9 @@
 #include "TextureManager.h"
 #include "Proyectile.h"
 #include "Bonus.h"
+#include <iostream>
+
+using namespace std;
 
 class Ship
 {
@@ -40,7 +43,7 @@ public:
 
 	Ship(GLfloat r, GLfloat xx, GLfloat yy, int lv)
 	{
-		sprite = TextureManager::Inst()->LoadTexture("image/nave.png", GL_BGRA_EXT, GL_RGBA);
+		sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_BGRA_EXT, GL_RGBA);
 		lives=lv;
 		radio=r;
 		coordx=xx;
@@ -67,7 +70,7 @@ public:
 		}
 		count=0;*/
 
-		x = 0.2;
+		x = 0.25;
 		y = 0.666;
 
 		upgrade_shot=true;
@@ -161,16 +164,28 @@ public:
 		shot[count].coordx=coordx;
 		shot[count].coordy=coordy+radio+shot[count].large;
 		count=(count+1)%numshots;
-	}
+	}*/
 	bool collision(Enemy *e)
 	{
-		for (int i = 0; i < numshots; ++i)
+		/*for (int i = 0; i < numshots; ++i)
 		{
 			if (shot[i].collision(e))
 				return true;
 		}
+		return false;*/
+
+		/*cout<<"distancia: "<<sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) )<<endl;*/
+		if( sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) ) <= (e->radio && (e->state && state)) )
+		{
+			cout<<"distancia: "<<sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) )<<endl;			
+			e->state=false;
+			state=false;
+			//explosion();
+			lives--;
+			return true;
+		}
 		return false;
-	}*/
+	}
 
 	//~Ship();
 	

@@ -215,13 +215,13 @@ void glPaint(void) {
 	glVertex3d(16, -12, 0);
 	glEnd();
 
-
+	//if (iter == 5) iter = 0;
 	nave->draw();
 	
 	//if(nave->ifShot())
 	//	nave->shot.draw();
 
-	/*for (int i = 0; i < num_enemigos; ++i)
+	for (int i = 0; i < num_enemigos; ++i)
 	{
 		enemigo[i]->draw();
 
@@ -233,8 +233,13 @@ void glPaint(void) {
 			cout<<"Puntaje: "<<nave->total_score<<endl;
 		}
 
-		//enemigo[i]->collision(nave);
-	}*/
+		cout<<"nave->collision(enemigo[i]): "<<nave->collision(enemigo[i])<<endl;
+		if(nave->collision(enemigo[i]))
+		{
+			nave->destroy();
+			cout<<"should be destroyed"<<endl;
+		}
+	}
 
 	nave_malvada->draw();
 	if(nave->shot.collisionShip(nave_malvada))
@@ -386,7 +391,7 @@ int main(int argc, char** argv)
 	black = TextureManager::Inst()->LoadTexture("negro.png", GL_BGRA_EXT, GL_RGBA);
 	grenade = TextureManager::Inst()->LoadTexture("image/grenade.png", GL_BGRA_EXT, GL_RGBA);
 
-	nave=new Ship(2.0f,0.0f,-5.0f,5);
+	nave=new Ship(2.0f,0.0f,-5.0f,3);
 
 	//Rock roca(2);
 	//enemigo=new Enemy(2.0f);

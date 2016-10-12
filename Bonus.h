@@ -31,7 +31,7 @@ public:
 	{
 		radio=r;
 		score=sc;
-		state=true;
+		state=false;
 		type=tp;
 		switch(type)
 		{
@@ -78,7 +78,7 @@ public:
 	{
 		if(!state)
 		{
-			revive(20.0);
+			revive(10.0);
 			return;
 		}
 		glBindTexture(GL_TEXTURE_2D, imagen);

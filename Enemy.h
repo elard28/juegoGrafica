@@ -48,8 +48,8 @@ public:
 		y=0.5f;
 
 		radio=r;
-		coordx=rand()%20-10;
-		coordy=rand()%5+5;
+		coordx=rand()%30-15;
+		coordy=rand()%5+13;
 		state=true;
 		score=sc;
 	}
@@ -80,7 +80,7 @@ public:
 
 	void draw()
 	{
-		/*timer = glutGet(GLUT_ELAPSED_TIME); // recupera el tiempo ,que paso desde el incio de programa
+		timer = glutGet(GLUT_ELAPSED_TIME); // recupera el tiempo ,que paso desde el incio de programa
 		deltatime = timer -timebase;// delta time
 		timebase = timer;
 		anim += deltatime;
@@ -100,11 +100,19 @@ public:
 		glEnd();
 
 		coordy-=0.01f;
+		if (iter == 5) iter = 0;
 		if (anim / 1000.0 > limit)// si el tiempo de animacion dura mas 0.30s cambiamos de sprite
 		{
 			iter=(iter+1)%16;
 			anim = 0;
-		}*/
+		}
+
+		if(coordy<-10){
+			coordx=rand()%30-15;
+			coordy=rand()%8+13;	
+		}else{
+			coordy-=0.1f;
+		} 	
 	}
 
 	bool destroy()
