@@ -45,8 +45,7 @@ public:
 
 	Ship(GLfloat r, GLfloat xx, GLfloat yy, int lv)
 	{
-		//sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_BGRA_EXT, GL_RGBA);
-		sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_RGB, GL_RGB);
+		sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_BGRA_EXT, GL_RGBA);
 		lives=lv;
 		radio=r;
 		coordx=xx;
@@ -79,15 +78,10 @@ public:
 		upgrade_shot=true;
 	}
 
-	/*void go_right(){coordx++;}
+	void go_right(){coordx++;}
 	void go_left(){coordx--;}
 	void go_up(){coordy++;}
-	void go_down(){coordy--;}*/
-
-	void go_right(){coordx+=0.25;}
-	void go_left(){coordx-=0.25;}
-	void go_up(){coordy+=0.25;}
-	void go_down(){coordy-=0.25;}
+	void go_down(){coordy--;}
 
 	GLfloat Right(){return coordx+radio;}
 	GLfloat Left(){return coordx-radio;}
@@ -103,68 +97,17 @@ public:
 
 		if(!state)
 			return;
-//<<<<<<< HEAD
-		
-		//glTranslatef(5.0, 0.0, 0.0);
-
 		glBindTexture(GL_TEXTURE_2D, sprite);
-//=======
-		glPushMatrix();
-		glTranslatef(coordx,0.0,coordy)	;
-//>>>>>>> 75d948e363a7a39801e141450e036656123d722f
 		glBegin(GL_QUADS);
-		//vértices en 3d
-		glColor3f(1,0,0);//rojo
-		glVertex3d(-2,0,-2);//4
-		glColor3f(1,1,0);//amarillo
-		glVertex3d(-2,0,2);//3
-		glColor3f(0,0,1);//azul
-		glVertex3d(2,0,2);//2
-		glColor3f(0,1,0);//verde
-		glVertex3d(2,0,-2);//1
+		glTexCoord2f(x*iter, y);//coordenadas de textura
+		glVertex3d(Left(), Down(), 0);//abajo izquierda
+		glTexCoord2f(x*iter, 1.0f);
+		glVertex3d(Left(), Up(), 0);//arriba izquierda
+		glTexCoord2f(x*(iter+1.0), 1.0f);
+		glVertex3d(Right(), Up(), 0);//arriba derecha
+		glTexCoord2f(x*(iter+1.0), y);
+		glVertex3d(Right(), Down(), 0);//abajo derecha
 		glEnd();
-			//------------------caras de la pirámide
-			//para las caras triangulares
-			//se usará GL_TRIANGLES
-			//--------Cara 4  amarillo con blanco
-			glBegin(GL_TRIANGLES);
-			//vértices en 3d
-			glColor3f(1,1,1);//blanco
-			glVertex3d(0,2,0);
-			glColor3f(1,1,0);
-			glVertex3d(-2,0,-2);//1
-			glVertex3d(2,0,-2);//4
-			glEnd();
-
-			//--------Cara 1 rojo con blanco
-			glBegin(GL_TRIANGLES);
-			//vértices en 3d
-			glColor3f(1,1,1);//blanco
-			glVertex3d(0,4,0);
-			glColor3f(1,0,0);//rojo
-			glVertex3d(4,0,-4);
-			glVertex3d(4,0,4);
-			glEnd();
-			//--------Cara 3 verde con blanco
-			glBegin(GL_TRIANGLES);
-			//vértices en 3d
-			glColor3f(1,1,1);//blanco
-			glVertex3d(0,4,0);
-			glColor3f(0,1,0);//verde
-			glVertex3d(-4,0,4);
-			glVertex3d(-4,0,-4);
-			glEnd();
-			//-------Cara 2 azul con blanco
-			glBegin(GL_TRIANGLES);
-			//vértices en 3d
-			glColor3f(1,1,1);//blanco
-			glVertex3d(0,4,0);
-			glColor3f(0,0,1);//azul
-			glVertex3d(4,0,4);
-			glVertex3d(-4,0,4);
-			glEnd();
-		glPopMatrix();
-		
 
 		if (anim / 1000.0 > 0.15)
 		{
