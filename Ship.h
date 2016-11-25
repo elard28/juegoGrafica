@@ -97,17 +97,61 @@ public:
 
 		if(!state)
 			return;
-		glBindTexture(GL_TEXTURE_2D, sprite);
+		glPushMatrix();
+		glTranslatef(coordx,0.0,coordy)	;
 		glBegin(GL_QUADS);
-		glTexCoord2f(x*iter, y);//coordenadas de textura
-		glVertex3d(Left(), Down(), 0);//abajo izquierda
-		glTexCoord2f(x*iter, 1.0f);
-		glVertex3d(Left(), Up(), 0);//arriba izquierda
-		glTexCoord2f(x*(iter+1.0), 1.0f);
-		glVertex3d(Right(), Up(), 0);//arriba derecha
-		glTexCoord2f(x*(iter+1.0), y);
-		glVertex3d(Right(), Down(), 0);//abajo derecha
+		//vértices en 3d
+		glColor3f(1,0,0);//rojo
+		glVertex3d(-2,0,-2);//4
+		glColor3f(1,1,0);//amarillo
+		glVertex3d(-2,0,2);//3
+		glColor3f(0,0,1);//azul
+		glVertex3d(2,0,2);//2
+		glColor3f(0,1,0);//verde
+		glVertex3d(2,0,-2);//1
 		glEnd();
+			//------------------caras de la pirámide
+			//para las caras triangulares
+			//se usará GL_TRIANGLES
+			//--------Cara 4  amarillo con blanco
+			glBegin(GL_TRIANGLES);
+			//vértices en 3d
+			glColor3f(1,1,1);//blanco
+			glVertex3d(0,2,0);
+			glColor3f(1,1,0);
+			glVertex3d(-2,0,-2);//1
+			glVertex3d(2,0,-2);//4
+			glEnd();
+
+			//--------Cara 1 rojo con blanco
+			glBegin(GL_TRIANGLES);
+			//vértices en 3d
+			glColor3f(1,1,1);//blanco
+			glVertex3d(0,4,0);
+			glColor3f(1,0,0);//rojo
+			glVertex3d(4,0,-4);
+			glVertex3d(4,0,4);
+			glEnd();
+			//--------Cara 3 verde con blanco
+			glBegin(GL_TRIANGLES);
+			//vértices en 3d
+			glColor3f(1,1,1);//blanco
+			glVertex3d(0,4,0);
+			glColor3f(0,1,0);//verde
+			glVertex3d(-4,0,4);
+			glVertex3d(-4,0,-4);
+			glEnd();
+			//-------Cara 2 azul con blanco
+			glBegin(GL_TRIANGLES);
+			//vértices en 3d
+			glColor3f(1,1,1);//blanco
+			glVertex3d(0,4,0);
+			glColor3f(0,0,1);//azul
+			glVertex3d(4,0,4);
+			glVertex3d(-4,0,4);
+			glEnd();
+		glPopMatrix();
+		
 
 		if (anim / 1000.0 > 0.15)
 		{
