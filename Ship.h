@@ -43,7 +43,8 @@ public:
 
 	Ship(GLfloat r, GLfloat xx, GLfloat yy, int lv)
 	{
-		sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_BGRA_EXT, GL_RGBA);
+		//sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_BGRA_EXT, GL_RGBA);
+		sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_RGB, GL_RGB);
 		lives=lv;
 		radio=r;
 		coordx=xx;
@@ -76,10 +77,15 @@ public:
 		upgrade_shot=true;
 	}
 
-	void go_right(){coordx++;}
+	/*void go_right(){coordx++;}
 	void go_left(){coordx--;}
 	void go_up(){coordy++;}
-	void go_down(){coordy--;}
+	void go_down(){coordy--;}*/
+
+	void go_right(){coordx+=0.25;}
+	void go_left(){coordx-=0.25;}
+	void go_up(){coordy+=0.25;}
+	void go_down(){coordy-=0.25;}
 
 	GLfloat Right(){return coordx+radio;}
 	GLfloat Left(){return coordx-radio;}
@@ -95,6 +101,9 @@ public:
 
 		if(!state)
 			return;
+		
+		//glTranslatef(5.0, 0.0, 0.0);
+
 		glBindTexture(GL_TEXTURE_2D, sprite);
 		glBegin(GL_QUADS);
 		glTexCoord2f(x*iter, y);//coordenadas de textura

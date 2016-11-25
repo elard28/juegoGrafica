@@ -87,7 +87,7 @@ public:
 
 		if(!state)
 			return;
-		glBindTexture(GL_TEXTURE_2D, imagen);
+		/*glBindTexture(GL_TEXTURE_2D, imagen);
 		glBegin(GL_QUADS);
 		glTexCoord2f(x*iter, y);//coordenadas de textura
 		glVertex3d(Left(), Down(), 0);//abajo izquierda
@@ -97,7 +97,12 @@ public:
 		glVertex3d(Right(), Up(), 0);//arriba derecha
 		glTexCoord2f(x*(iter+1.0), y);
 		glVertex3d(Right(), Down(), 0);//abajo derecha
-		glEnd();
+		glEnd();*/
+
+		glPushMatrix();
+		glTranslatef(coordx,coordy,0.0);
+		glutSolidSphere(radio,10,10);
+		glPopMatrix();
 
 		coordy-=0.01f;
 		if (iter == 5) iter = 0;

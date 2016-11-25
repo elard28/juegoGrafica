@@ -182,6 +182,8 @@ void draw_grenade()
 	}
 }
 
+bool t=true;
+
 void glPaint(void) {
 
 	//El fondo de la escena al color initial
@@ -202,6 +204,16 @@ void glPaint(void) {
     }
   }*/
 
+    /*gluPerspective(45.0f, 1.0f, 0.01f, 100.0f);
+
+    if(t)
+    {
+    	glRotatef(30.0, 1.0, 0.0, 0.0);
+    	//t=false;
+    }
+
+
+    glutSolidCube(8);*/
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBegin(GL_QUADS);
@@ -278,6 +290,7 @@ void glPaint(void) {
 	draw_grenade();
 
 	glutSwapBuffers();
+
 }
 
 //
@@ -285,7 +298,9 @@ void glPaint(void) {
 //
 void init_GL(void) {
 	//Color del fondo de la escena
-	glClearColor(0.4f, 0.4f, 0.4f, 0.2f); //(R, G, B, transparencia) en este caso un fondo negro
+	//glClearColor(0.4f, 0.4f, 0.4f, 0.2f); //(R, G, B, transparencia) en este caso un fondo negro
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 	//modo projeccion 
 	glMatrixMode(GL_PROJECTION);
@@ -380,7 +395,7 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(800, 600); //tamaño de la ventana
-	glutInitWindowPosition(100, 100); //posicion de la ventana
+	glutInitWindowPosition(0, 0); //posicion de la ventana
 	glutCreateWindow("Milky Way"); //titulo de la ventana
 
 	init_GL();
