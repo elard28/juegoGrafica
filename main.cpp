@@ -6,9 +6,9 @@
 #include <string>
 #include <iostream>
 
-#include <AL/al.h>
+/*#include <AL/al.h>
 #include <AL/alc.h>
-#include <AL/alut.h>
+#include <AL/alut.h>*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -203,7 +203,8 @@ void glPaint(void) {
   }*/
 
 
-	glBindTexture(GL_TEXTURE_2D, texture);
+
+	/*glBindTexture(GL_TEXTURE_2D, texture);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0);//coordenadas de textura
 	glVertex3d(-16, -12, 0); //dl
@@ -213,7 +214,7 @@ void glPaint(void) {
 	glVertex3d(16, 12, 0);
 	glTexCoord2f(1.0, 0.0); //dr
 	glVertex3d(16, -12, 0);
-	glEnd();
+	glEnd();*/
 
 	//if (iter == 5) iter = 0;
 	nave->draw();
