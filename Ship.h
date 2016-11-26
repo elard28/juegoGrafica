@@ -164,7 +164,7 @@ public:
 			glVertex3d(-4,0,4);
 			glEnd();
 		glPopMatrix();
-		
+		glColor3f(1,1,1);
 
 		if (anim / 1000.0 > 0.15)
 		{
@@ -185,6 +185,7 @@ public:
 		shot.state=true;
 		shot.coordx=coordx;
 		shot.coordy=coordy+radio+shot.large;
+		//shot.coordz=coordz;
 	}
 
 	bool ifShot()

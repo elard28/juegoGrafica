@@ -142,7 +142,7 @@ GLvoid window_display()
 
 	glTranslatef(0.0, 0.0, -30.0);
 	glRotatef(0.0, 0.0, 1.0, 0.0);
-	glRotatef(-60.0, 1.0, 0.0, 0.0);
+	glRotatef(-75.0, 1.0, 0.0, 0.0);
 
 
 

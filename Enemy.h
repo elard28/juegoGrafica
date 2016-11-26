@@ -18,6 +18,7 @@ public:
 	GLfloat radio;
 	GLfloat coordx;
 	GLfloat coordy;
+	GLfloat coordz;
 	GLfloat imagen;
 	bool state;
 	int respawn;
@@ -50,6 +51,7 @@ public:
 		radio=r;
 		coordx=rand()%30-15;
 		coordy=rand()%5+13;
+		coordz=rand()%30-15;
 		state=true;
 		score=sc;
 	}
@@ -100,7 +102,7 @@ public:
 		glEnd();*/
 
 		glPushMatrix();
-		glTranslatef(coordx,coordy,0.0);
+		glTranslatef(coordx,coordy,coordz);
 		glutSolidSphere(radio,10,10);
 		glPopMatrix();
 

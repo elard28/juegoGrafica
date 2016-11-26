@@ -11,6 +11,7 @@ public:
 	GLfloat large;
 	GLfloat coordx;
 	GLfloat coordy;
+	GLfloat coordz;
 	GLfloat velocity;
 	bool state;
 	GLfloat sprite;
@@ -47,7 +48,7 @@ public:
 		if(!state)
 			return;
 
-		if(upgraded)
+		/*if(upgraded)
 		{
 			timer = glutGet(GLUT_ELAPSED_TIME); // recupera el tiempo ,que paso desde el incio de programa
 			deltatime = timer -timebase;// delta time
@@ -72,7 +73,16 @@ public:
 		glVertex3d(Right(), Down(), 0);//dr
 		glEnd();
 
-		coordy+=velocity;
+		coordy+=velocity;*/
+
+		glPushMatrix();
+		glTranslatef(coordx, coordy, coordz);
+		glRotatef(90, 1.0, 0.0, 0.0);
+		GLUquadricObj *obj = gluNewQuadric();
+	    gluCylinder(obj, 0.1f, 0.4f, 5, 30, 30);
+	    glPopMatrix();
+
+	    coordy+=velocity;
 	}
 
 	bool collision(Enemy *e)
