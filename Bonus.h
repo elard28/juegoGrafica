@@ -15,6 +15,7 @@ public:
 	GLfloat radio;
 	GLfloat coordx;
 	GLfloat coordy;
+	GLfloat coordz;
 	GLfloat imagen;
 	bool state;
 	int respawn;
@@ -26,6 +27,10 @@ public:
 	int deltatime;
 	int anim;
 	float limit;
+
+	GLfloat rotatex;
+	GLfloat rotatey;
+	GLfloat rotatez;
 
 	Bonus(GLfloat r, int sc, int tp)
 	{
@@ -45,12 +50,17 @@ public:
 				break;
 		}
 		coordx=rand()%20-10;
-		coordy=rand()%5+5;
+		coordy=rand()%5;
+		coordz=rand()%20-10;
 
 		timer = 0;
 		timebase = 0;
 		deltatime=0;
 		anim = 0;
+
+		rotatex=0.0f;
+		rotatey=0.0f;
+		rotatez=0.0f;
 	}
 
 	void setType(int tp)
@@ -81,7 +91,7 @@ public:
 			revive(10.0);
 			return;
 		}
-		glBindTexture(GL_TEXTURE_2D, imagen);
+		/*glBindTexture(GL_TEXTURE_2D, imagen);
 		glBegin(GL_QUADS);
 		glTexCoord2f(0.0,0.0);//coordenadas de textura
 		glVertex3d(Left(), Down(), 0);//dl
@@ -91,10 +101,29 @@ public:
 		glVertex3d(Right(), Up(), 0);//ur
 		glTexCoord2f(1.0,0.0);
 		glVertex3d(Right(), Down(), 0);//dr
-		glEnd();
+		glEnd();*/
+
+		glPushMatrix();
+		glTranslatef(coordx,coordy,coordz);
+
+		glRotatef(rotatex, 1.0, 0.0, 0.0);
+		glRotatef(rotatey, 0.0, 1.0, 0.0);
+		glRotatef(rotatez, 0.0, 0.0, 1.0);
+		
+		glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+    	glEnable(GL_TEXTURE_GEN_T);
+    	glBindTexture(GL_TEXTURE_2D, imagen);
+		glutSolidCube(radio);
+		glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+    	glDisable(GL_TEXTURE_GEN_T);
+		glPopMatrix();
+
+		rotatex++;
+		rotatey++;
+		rotatez++;
 
 		coordy-=0.05f;
-		if(Down()<-12)
+		if(Down()<-20)
 			state=false;
 	}
 
@@ -110,6 +139,7 @@ public:
 			state=true;
 			coordx=rand()%20-10;
 			coordy=rand()%5+5;
+			coordx=rand()%20-10;
 			int rn=rand()%2;
 			setType(rn);
 			anim=0;

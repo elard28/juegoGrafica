@@ -38,10 +38,10 @@ public:
 	}
 
 
-	GLfloat Right(){return coordx+large;}
+	/*GLfloat Right(){return coordx+large;}
 	GLfloat Left(){return coordx-large;}
 	GLfloat Up(){return coordy+large*4;}
-	GLfloat Down(){return coordy-large*4;}
+	GLfloat Down(){return coordy-large*4;}*/
 
 	void draw()
 	{
@@ -59,9 +59,9 @@ public:
 				downgrade();
 				//anim = 0;
 			}
-		}
+		}*/
 		
-		glBindTexture(GL_TEXTURE_2D, sprite);
+		/*glBindTexture(GL_TEXTURE_2D, sprite);
 		glBegin(GL_QUADS);
 		glTexCoord2f(0.0,0.0);//coordenadas de textura
 		glVertex3d(Left(), Down(), 0);//dl
@@ -79,7 +79,11 @@ public:
 		glTranslatef(coordx, coordy, coordz);
 		glRotatef(90, 1.0, 0.0, 0.0);
 		GLUquadricObj *obj = gluNewQuadric();
+		glEnable(GL_TEXTURE_GEN_T);
+    	glBindTexture(GL_TEXTURE_2D, sprite);
 	    gluCylinder(obj, 0.1f, 0.4f, 5, 30, 30);
+	    glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+    	glDisable(GL_TEXTURE_GEN_T);
 	    glPopMatrix();
 
 	    coordy+=velocity;
@@ -87,9 +91,11 @@ public:
 
 	bool collision(Enemy *e)
 	{
-		if( sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) ) <= (large + e->radio) && e->state && state)
+		if( sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) + pow(coordz - e->coordz, 2) ) 
+			<= (large + e->radio) && e->state && state)
 		{
-			e->state=false;
+			//e->state=false;
+			//e->explosion();
 			state=false;
 			return true;
 		}
@@ -126,6 +132,58 @@ public:
 		upgraded=false;
 	}
 	
+};
+
+class Proyectiles
+{
+public:
+	int num;
+	Proyectile *pry;
+	int count;
+	GLfloat large;
+	GLfloat velocity;
+
+	Proyectiles(int n)
+	{
+		num=n;
+		pry=new Proyectile[num];
+		count=0;
+	}
+
+	void initProyectile(GLfloat cx,GLfloat cy,GLfloat cz)
+	{
+		pry[count].large=large;
+		pry[count].velocity=velocity;
+
+		pry[count].coordx=cx;
+		pry[count].coordy=cy;
+		pry[count].coordz=cz;
+		pry[count].state=true;
+
+		count=(count+1)%num;
+	}
+
+	void draw()
+	{
+		for (int i = 0; i < num; ++i)
+			pry[i].draw();
+	}
+
+	bool collision(Enemy *e)
+	{
+		for (int i = 0; i < num; ++i)
+		{
+			if (pry[i].collision(e))
+				return true;
+		}
+		return false;
+	}
+
+	void upgrade()
+	{
+		for (int i = 0; i < num; ++i)
+			pry[i].upgrade();
+	}
 };
 
 #endif

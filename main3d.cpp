@@ -35,10 +35,16 @@ using namespace std;
 
 #define ECHAP 27
 
+GLfloat texture;
+
 Ship *nave;
 Enemy **enemigo;
+Bonus **bono;
 
-int num_enemigos=20;
+int num_enemigos=10;
+int num_bonos=5;
+
+int timer = 0;
 
 //variables para el gizmo
 float delta_x = 0.0; 
@@ -71,6 +77,95 @@ void print()
 	cout<<"delta_y: "<<delta_y<<endl;
 	cout<<endl;
 }
+
+/*string life="LIFE: ";
+void draw_life()
+{
+	glRasterPos2i(-15, -12);
+	//glColor3f( 0.0f, 0.0f, 1.0f);
+
+	glDisable(GL_TEXTURE);
+	glDisable(GL_TEXTURE_2D);
+
+	for (int i = 0; i < life.size(); ++i)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)life[i]);
+
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE);
+
+	for (int i = 0; i < nave->lives; ++i)
+	{
+		glBindTexture(GL_TEXTURE_2D, sprites);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0f,0.666f);
+		glVertex3d(-13.0f+i, -12.0f, 0);//dl
+		glTexCoord2f(0.0f,1.0f);
+		glVertex3d(-13.0f+i, -11.0f, 0);//ul
+		glTexCoord2f(0.2f,1.0f);
+		glVertex3d(-12.0f+i, -11.0f, 0);//ur
+		glTexCoord2f(0.2f,0.666f);
+		glVertex3d(-12.0f+i, -12.0f, 0);//dr
+		glEnd();
+	}
+}*/
+
+string score="SCORE: ";
+void draw_score()
+{
+	stringstream ss;
+	ss<<nave->total_score;
+	glRasterPos2i(-7, -12);
+	//glColor3f( 0.0f, 0.0f, 1.0f);
+
+	glDisable(GL_TEXTURE);
+	glDisable(GL_TEXTURE_2D);
+
+	for (int i = 0; i < score.size(); ++i)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)score[i]);
+
+	for (int i = 0; i < ss.str().size(); ++i)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)ss.str()[i]);
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE);
+}
+
+string tm="TIME: ";
+void draw_time()
+{
+	int t=timer/1000;
+
+	stringstream minute;
+	minute<<t/60;
+
+	stringstream second;
+	second<<t%60;
+
+	glRasterPos2i(0, -18);
+	//glColor3f( 0.0f, 0.0f, 1.0f);
+
+	glDisable(GL_TEXTURE);
+	glDisable(GL_TEXTURE_2D);
+
+	for (int i = 0; i < score.size(); ++i)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)tm[i]);
+
+	for (int i = 0; i < minute.str().size(); ++i)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)minute.str()[i]);
+
+	glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)':');
+
+	if(t%60<10)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)'0');
+
+	for (int i = 0; i < second.str().size(); ++i)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,(int)second.str()[i]);	
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE);
+}
+
 
 GLvoid initGL()
 {
@@ -127,7 +222,7 @@ GLvoid window_display()
 {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	timer = glutGet(GLUT_ELAPSED_TIME); 
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -145,13 +240,33 @@ GLvoid window_display()
 	glRotatef(-75.0, 1.0, 0.0, 0.0);
 
 
+	/*glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+    glEnable(GL_TEXTURE_GEN_T);
+    glBindTexture(GL_TEXTURE_2D, texture);
+	glutSolidCube(100);
+	glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+    glDisable(GL_TEXTURE_GEN_T);*/
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBegin(GL_QUADS);
+    glNormal3f(0.0,0.0,1.0);
+    glTexCoord2f(0.0,0.0);//coordenadas de textura
+	glVertex3d(-50.0f, 50.0f, -60.0f);//dl
+	glTexCoord2f(0.0,1.0);
+	glVertex3d(-50.0f, 50.0f, 50.0f);//ul
+	glTexCoord2f(1.0,1.0);
+	glVertex3d(50.0f, 50.0f, 50.0f);//ur
+	glTexCoord2f(1.0,0.0);
+	glVertex3d(50.0f, 50.0f, -60.0f);//dr
+    glEnd();
+
+
 
 	nave->draw();
 
-	//for (int i = 0; i < num_enemigos; ++i)
-	//	enemigo[i]->draw();
 
-	for (int i = 0; i < num_enemigos; ++i)
+	
+	/*for (int i = 0; i < num_enemigos; ++i)
 	{
 		enemigo[i]->draw();
 
@@ -169,8 +284,44 @@ GLvoid window_display()
 			nave->destroy();
 			//cout<<"should be destroyed"<<endl;
 		}
+	}*/
+	for (int i = 0; i < num_enemigos; ++i)
+	{
+		enemigo[i]->draw();
+
+		if(nave->shots->collision(enemigo[i]))
+		{
+			enemigo[i]->destroy();
+			cout<<"Enemigo "<<i<<" destruido"<<endl;
+			nave->win(enemigo[i]->score);
+			cout<<"Puntaje: "<<nave->total_score<<endl;
+		}
+
+		//cout<<"nave->collision(enemigo[i]): "<<nave->collision(enemigo[i])<<endl;
+		if(nave->collision(enemigo[i]))
+		{
+			nave->destroy();
+			//cout<<"should be destroyed"<<endl;
+		}
 	}
+
 	
+	
+	for (int i = 0; i < num_bonos; ++i)
+	{
+		bono[i]->draw();
+
+		if(nave->bonus_collision(bono[i]))
+		{
+			cout<<"Bono "<<i<<" cogido"<<endl;
+			nave->win(bono[i]->score);
+			cout<<"Puntaje: "<<nave->total_score<<endl;
+		}
+	}
+
+	//draw_life();
+	draw_score();
+	draw_time();
 
 	glutSwapBuffers();
 
@@ -277,26 +428,34 @@ GLvoid callback_special(int key, int x, int y)
 	switch (key) 
 	{
 	case GLUT_KEY_RIGHT: //d
-		if(nave->Right()<15)
+		if(nave->Right()<15){
 			nave->go_right();
+			nave->rotate_right();
+		}
 		//cout<<"mueve derecha"<<"\tx: "<<nave->coordx<<"\ty: "<<nave->coordy<<endl;
 		break;
 
 	case GLUT_KEY_LEFT: //f
-		if(nave->Left()>-15)
+		if(nave->Left()>-15){
 			nave->go_left();
+			nave->rotate_left();
+		}
 		//cout<<"mueve izquiera"<<"\tx: "<<nave->coordx<<"\ty: "<<nave->coordy<<endl;
 		break;
 
 	case GLUT_KEY_UP: //e
-		if(nave->Up()<0)
+		if(nave->Up()<15){
 			nave->go_up();
+			//nave->rotate_up();
+		}
 		//cout<<"mueve arriba"<<"\tx: "<<nave->coordx<<"\ty: "<<nave->coordy<<endl;
 		break;
 
 	case GLUT_KEY_DOWN: //g
-		if(nave->Down()>-10)
+		if(nave->Down()>-15){
 			nave->go_down();
+			//nave->rotate_down();
+		}
 		//cout<<"mueve abajo"<<"\tx: "<<nave->coordx<<"\ty: "<<nave->coordy<<endl;
 		break;
 
@@ -306,6 +465,23 @@ GLvoid callback_special(int key, int x, int y)
 
 }
 
+/*void callback_special_up(int key, int x, int y) 
+{
+	switch (key) 
+	{
+		case GLUT_KEY_RIGHT:
+			break;
+
+		case GLUT_KEY_LEFT:
+			break;
+
+		case GLUT_KEY_UP:
+			break;
+
+		case GLUT_KEY_DOWN:
+			break;
+	}
+}*/
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -350,11 +526,17 @@ int main(int argc, char **argv)
 
 	initGL();
 
-	nave=new Ship(2.0f,0.0f,-5.0f,3);
+	texture = TextureManager::Inst()->LoadTexture("image/space2.jpg", GL_BGR_EXT, GL_RGB);
+
+	nave=new Ship(2.0f,0.0f,-5.0f,-10.0f,3);
 
 	enemigo=new Enemy*[num_enemigos];
 	for (int i = 0; i < num_enemigos; ++i)
-		enemigo[i]=new Enemy(1.0f,50);
+		enemigo[i]=new Enemy(2.0f,50);
+
+	bono=new Bonus*[num_bonos];
+	for (int i = 0; i < num_bonos; ++i)
+		bono[i]=new Bonus(1.0f,25,rand()%2);
 
 	init_scene();
 

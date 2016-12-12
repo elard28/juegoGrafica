@@ -9,6 +9,7 @@
 #include <GL/glut.h>
 #include "TextureManager.h"
 #include "Ship.h"
+#include "Particle.h"
 
 #define RANDOM ((float)rand()/RAND_MAX)
 
@@ -34,9 +35,14 @@ public:
 	int anim;
 	float limit;
 
+	Particles part;
+
 	Enemy(GLfloat r,int sc)
 	{
 		//imagen = TextureManager::Inst()->LoadTexture("image/rock.png", GL_BGRA_EXT, GL_RGBA);
+		
+		//part=new Particles();
+
 		imagen = TextureManager::Inst()->LoadTexture("image/asteroide.png", GL_BGRA_EXT, GL_RGBA);
 		iter=0;
 		timer = 0;
@@ -119,7 +125,8 @@ public:
 			coordy=rand()%8+13;	
 		}else{
 			coordy-=0.1f;
-		} 	
+		}
+		part.draw();
 	}
 
 	bool destroy()
@@ -127,9 +134,16 @@ public:
 		if (state)
 		{
 			state=false;
+			//part.iniParticles(coordx,coordy,coordz,0.0f,0.0f,1.0f);
 			return true;
 		}
 		return false;
+	}
+
+	void explosion()
+	{
+		part.iniParticles(coordx,coordy,coordz,0.0f,0.0f,1.0f);
+		cout<<"Destruidooooooooooooooo"<<endl;
 	}
 
 	void revive()

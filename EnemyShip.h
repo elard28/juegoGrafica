@@ -17,6 +17,7 @@ public:
 	GLfloat radio;
 	GLfloat coordx;
 	GLfloat coordy;
+	GLfloat coordz;
 	GLfloat imagen;
 	bool state;
 	int respawn;
@@ -44,6 +45,7 @@ public:
 		radio=r;
 		coordx=rand()%20-10;
 		coordy=rand()%5+5;
+		coordz=rand()%20-10;
 		state=true;
 		score=sc;
 

@@ -7,6 +7,7 @@
 #include "Bonus.h"
 #include <iostream>
 #include <unistd.h>
+#include "Particle.h"
 
 
 using namespace std;
@@ -18,10 +19,15 @@ public:
 	GLfloat radio;
 	GLfloat coordx;
 	GLfloat coordy;
+	GLfloat coordz;
+	GLfloat cub;
+	GLfloat cubd;
+	GLfloat cubb;
 	bool state;
 	GLfloat sprite;
 	int total_score;
-	Proyectile shot;
+	//Proyectile shot;
+	Proyectiles *shots;
 
 	bool explode;
 
@@ -30,6 +36,9 @@ public:
 	/*Proyectile *shot;
 	int numshots;
 	int count;*/
+
+	GLfloat rotx;
+	GLfloat roty;
 
 	int iter;
 	double x;
@@ -43,7 +52,7 @@ public:
 
 	Ship();
 
-	Ship(GLfloat r, GLfloat xx, GLfloat yy, int lv)
+	Ship(GLfloat r, GLfloat xx, GLfloat yy,GLfloat zz, int lv)
 	{
 		//sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_BGRA_EXT, GL_RGBA);
 		sprite = TextureManager::Inst()->LoadTexture("image/ship2.png", GL_RGB, GL_RGB);
@@ -51,12 +60,16 @@ public:
 		radio=r;
 		coordx=xx;
 		coordy=yy;
+		coordz=zz;
 		total_score=0;
 		state=true;
 		explode=false;
 
-		shot.large=0.25f;
-		shot.velocity=0.5f;
+		//shot.large=0.25f;
+		//shot.velocity=0.5f;
+		shots=new Proyectiles(5);
+		shots->large=0.25f;
+		shots->velocity=0.5f;
 
 		iter=0;
 		timer = 0;
@@ -64,6 +77,11 @@ public:
 		deltatime=0;
 		anim = 0;
 
+		rotx=0.0f;
+		roty=0.0f;
+		cub = TextureManager::Inst()->LoadTexture("cubiertanave.png", GL_BGRA_EXT, GL_RGB);
+		cubd = TextureManager::Inst()->LoadTexture("cubiertanaveabajo.png", GL_BGRA_EXT, GL_RGB);
+		cubb = TextureManager::Inst()->LoadTexture("cubiertaatras.png", GL_BGRA_EXT, GL_RGB);
 		/*numshots=ns;
 		shot=new Proyectile[ns];
 		for (int i = 0; i < count; ++i)
@@ -84,15 +102,50 @@ public:
 	void go_up(){coordy++;}
 	void go_down(){coordy--;}*/
 
-	void go_right(){coordx+=0.25;}
-	void go_left(){coordx-=0.25;}
-	void go_up(){coordy+=0.25;}
-	void go_down(){coordy-=0.25;}
+	void go_right(){coordx+=0.5;}
+	void go_left(){coordx-=0.5;}
+	void go_up(){coordz+=0.5;}
+	void go_down(){coordz-=0.5;}
 
 	GLfloat Right(){return coordx+radio;}
 	GLfloat Left(){return coordx-radio;}
 	GLfloat Up(){return coordy+radio;}
 	GLfloat Down(){return coordy-radio;}
+
+	void rotate_right()
+	{
+		if(roty<=45.0f)
+			roty++;
+	}
+	void rotate_left()
+	{
+		if(roty>=-45.0f)
+			roty--;
+	}
+	void rotate_up()
+	{
+		if(rotx<=45.0f)
+			rotx++;
+	}
+	void rotate_down()
+	{
+		if(rotx>=-45.0f)
+			rotx-=2.0f;
+	}
+
+	GLfloat nx;
+	GLfloat ny;
+	GLfloat nz;
+	void normal(GLfloat ax,GLfloat ay, GLfloat az, GLfloat bx,GLfloat by, GLfloat bz)
+	{
+		nx=(ax*bz)-(az*by);
+		ny=(az*bx)-(ax*bz);
+		nz=(ax*by)-(ay*bx);
+		GLfloat mod=(GLfloat)sqrt((nx*nx)+(ny*ny)+(nz*nz));
+		nx/=mod;
+		ny/=mod;
+		nz/=mod;
+	}
 
 	void draw()
 	{
@@ -110,9 +163,9 @@ public:
 		glBindTexture(GL_TEXTURE_2D, sprite);
 //=======
 		glPushMatrix();
-		glTranslatef(coordx,0.0,coordy)	;
+		glTranslatef(coordx,coordy,coordz)	;
 //>>>>>>> 75d948e363a7a39801e141450e036656123d722f
-		glBegin(GL_QUADS);
+		/*glBegin(GL_QUADS);
 		//vértices en 3d
 		glColor3f(1,0,0);//rojo
 		glVertex3d(-2,0,-2);//4
@@ -162,7 +215,84 @@ public:
 			glColor3f(0,0,1);//azul
 			glVertex3d(4,0,4);
 			glVertex3d(-4,0,4);
+			glEnd();*/
+
+
+		//glRotatef(45.0, 1.0, 0.0, 0.0);
+		glRotatef(rotx, 1.0, 0.0, 0.0);
+		glRotatef(roty, 0.0, 1.0, 0.0);
+
+		//normal(2*radio, radio, radio, )
+		glBindTexture(GL_TEXTURE_2D, cubb);
+		glBegin(GL_QUADS);
+		normal(-2*radio,-1*radio,radio, 0,0,2*radio);
+		glNormal3f(nx,ny,nz);
+		glTexCoord2f(0.5,0.0);
+		glVertex3d(0*radio,-1*radio,-1*radio);
+		glTexCoord2f(0.0,0.5);
+		glVertex3d(-2*radio,-2*radio,0*radio);
+		normal(2*radio,radio,radio, 0,0,0);
+		glNormal3f(nx,ny,nz);
+		glTexCoord2f(0.5,1.0);
+		glVertex3d(0*radio,-1*radio,1*radio);
+		glTexCoord2f(1.0,0.5);
+		glVertex3d(2*radio,-2*radio,0*radio);
+		glEnd();
+
+			normal(2*radio,4*radio,0,  2*radio,radio,radio);
+			glBindTexture(GL_TEXTURE_2D, cub);
+			glBegin(GL_TRIANGLES);
+			//glColor3f(1,1,0); //amarillo
+			glNormal3f(nx,ny,nz);
+			glTexCoord2f(0.0,0.0);
+			glVertex3d(-2*radio,-2*radio,0*radio);
+			glTexCoord2f(1.0,1.0);
+			glVertex3d(0*radio,2*radio,0*radio);
+			glTexCoord2f(1.0,0.25);
+			glVertex3d(0*radio,-1*radio,1*radio);
 			glEnd();
+
+			normal(-2*radio,4*radio,0, -2*radio,radio,radio);
+			glBindTexture(GL_TEXTURE_2D, cub);
+			glBegin(GL_TRIANGLES);
+			//glColor3f(1,0,0);//rojo
+			glNormal3f(nx,ny,nz);
+			glTexCoord2f(0.0,0.0);
+			glVertex3d(2*radio,-2*radio,0*radio);
+			glTexCoord2f(1.0,1.0);
+			glVertex3d(0*radio,2*radio,0*radio);
+			glTexCoord2f(1.0,0.25);
+			glVertex3d(0*radio,-1*radio,1*radio);
+			glEnd();
+
+
+			normal(-2*radio,4*radio,0, -2*radio,radio,-1*radio);
+			glBindTexture(GL_TEXTURE_2D, cubd);
+			glBegin(GL_TRIANGLES);
+			//glColor3f(0,1,0);//verde
+			glNormal3f(nx,ny,nz);
+			glTexCoord2f(0.0,0.0);
+			glVertex3d(2*radio,-2*radio,0*radio);
+			glTexCoord2f(1.0,1.0);
+			glVertex3d(0*radio,2*radio,0*radio);
+			glTexCoord2f(1.0,0.25);
+			glVertex3d(0*radio,-1*radio,-1*radio);
+			glEnd();
+
+			normal(2*radio,4*radio,0, 2*radio,radio,-1*radio);
+			glBindTexture(GL_TEXTURE_2D, cubd);
+			glBegin(GL_TRIANGLES);
+			//glColor3f(0,0,1);//azul
+			glNormal3f(nx,ny,nz);
+			glTexCoord2f(0.0,0.0);
+			glVertex3d(-2*radio,-2*radio,0*radio);
+			glTexCoord2f(1.0,1.0);
+			glVertex3d(0*radio,2*radio,0*radio);
+			glTexCoord2f(1.0,0.25);
+			glVertex3d(0*radio,-1*radio,-1*radio);
+			glEnd();
+
+
 		glPopMatrix();
 		glColor3f(1,1,1);
 
@@ -171,27 +301,34 @@ public:
 			iter=(iter+1)%5;
 			anim = 0;
 		}
-		shot.draw();
+		shots->draw();
 
 	}
+
+	
 
 	void win(int sc)
 	{
 		total_score+=sc;
 	}
 
-	void shoot()
+	/*void shoot()
 	{
 		shot.state=true;
 		shot.coordx=coordx;
 		shot.coordy=coordy+radio+shot.large;
+		shot.coordz=coordz;
 		//shot.coordz=coordz;
+	}*/
+	void shoot()
+	{
+		shots->initProyectile(coordx, coordy+radio+shots->large, coordz);
 	}
 
-	bool ifShot()
+	/*bool ifShot()
 	{
 		return shot.state;
-	}
+	}*/
 
 	bool destroy()
 	{
@@ -212,7 +349,7 @@ public:
 			if(b->type==0)
 				explode=true;
 			if(b->type==1)
-				shot.upgrade();
+				shots->upgrade();
 			return true;
 		}
 		return false;
@@ -234,11 +371,28 @@ public:
 		}
 		return false;*/
 
+		
 		/*cout<<"distancia: "<<sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) )<<endl;*/
-		if( sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) ) <= (e->radio && (e->state && state)) )
+		/*if( sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) ) <= (e->radio && (e->state && state)) )
 		{
 			cout<<"distancia: "<<sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) )<<endl;		
 				
+			e->state=false;
+			sleep(1);
+			if(lives==0){
+				state=false;
+			}	
+				
+			//explosion();
+			lives--;
+			return true;
+		}
+		return false;*/
+
+
+		if(sqrt( pow(coordx - e->coordx, 2) + pow(coordy - e->coordy, 2) +  pow(coordz - e->coordz, 2)) 
+			<= e->radio+radio && e->state && state )
+		{				
 			e->state=false;
 			sleep(1);
 			if(lives==0){
