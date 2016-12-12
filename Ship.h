@@ -79,9 +79,9 @@ public:
 
 		rotx=0.0f;
 		roty=0.0f;
-		cub = TextureManager::Inst()->LoadTexture("cubiertanave.png", GL_BGRA_EXT, GL_RGB);
-		cubd = TextureManager::Inst()->LoadTexture("cubiertanaveabajo.png", GL_BGRA_EXT, GL_RGB);
-		cubb = TextureManager::Inst()->LoadTexture("cubiertaatras.png", GL_BGRA_EXT, GL_RGB);
+		cub = TextureManager::Inst()->LoadTexture("image/cubiertanave.png", GL_BGRA_EXT, GL_RGB);
+		cubd = TextureManager::Inst()->LoadTexture("image/cubiertanaveabajo.png", GL_BGRA_EXT, GL_RGB);
+		cubb = TextureManager::Inst()->LoadTexture("image/cubiertaatras.png", GL_BGRA_EXT, GL_RGB);
 		/*numshots=ns;
 		shot=new Proyectile[ns];
 		for (int i = 0; i < count; ++i)
